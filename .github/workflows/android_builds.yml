@@ -1,15 +1,12 @@
 name: 🤖 Android Builds
 on:
   workflow_call:
-  workflow_dispatch:
 
 # Global Settings
 env:
-  SCONS_FLAGS: >-
-    dev_mode=yes
-    module_text_server_fb_enabled=yes
-    tests=no
-    swappy=yes
+  # Used for the cache key. Add version suffix to force clean build.
+  GODOT_BASE_BRANCH: 4.4
+  SCONSFLAGS: verbose=yes warnings=extra werror=yes debug_symbols=no module_text_server_fb_enabled=yes strict_checks=yes
 
 jobs:
   build-android:
@@ -23,19 +20,23 @@ jobs:
           - name: Editor (target=editor)
             cache-name: android-editor
             target: editor
-            scons-flags: >-
-              arch=arm64
-              production=yes
+            tests: false
+            sconsflags: arch=arm64 production=yes swappy=yes
+            cache-limit: 1
 
-          - name: Template arm32 (target=template_debug, arch=arm32)
+          - name: Template arm32 (target=template_release, arch=arm32)
             cache-name: android-template-arm32
-            target: template_debug
-            scons-flags: arch=arm32
+            target: template_release
+            tests: false
+            sconsflags: arch=arm32 swappy=yes
+            cache-limit: 1
 
-          - name: Template arm64 (target=template_debug, arch=arm64)
+          - name: Template arm64 (target=template_release, arch=arm64)
             cache-name: android-template-arm64
-            target: template_debug
-            scons-flags: arch=arm64
+            target: template_release
+            tests: false
+            sconsflags: arch=arm64 swappy=yes
+            cache-limit: 1
 
     steps:
       - name: Checkout
@@ -61,8 +62,8 @@ jobs:
       - name: Download pre-built Android Swappy Frame Pacing Library
         uses: dsaltares/fetch-gh-release-asset@1.1.2
         with:
-          repo: godotengine/godot-swappy
-          version: tags/from-source-2025-01-31
+          repo: darksylinc/godot-swappy
+          version: tags/v2023.3.0.0
           file: godot-swappy.7z
           target: swappy/godot-swappy.7z
 
@@ -72,9 +73,11 @@ jobs:
       - name: Compilation
         uses: ./.github/actions/godot-build
         with:
-          scons-flags: ${{ env.SCONS_FLAGS }} ${{ matrix.scons-flags }}
+          sconsflags: ${{ env.SCONSFLAGS }} ${{ matrix.sconsflags }}
           platform: android
           target: ${{ matrix.target }}
+          tests: ${{ matrix.tests }}
+          scons-cache-limit: ${{ matrix.cache-limit }}
 
       - name: Save Godot build cache
         uses: ./.github/actions/godot-cache-save
@@ -83,7 +86,7 @@ jobs:
         continue-on-error: true
 
       - name: Generate Godot templates
-        if: matrix.target == 'template_debug'
+        if: matrix.target == 'template_release'
         run: |
           cd platform/android/java
           ./gradlew generateGodotTemplates
