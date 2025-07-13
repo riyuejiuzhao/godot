@@ -678,6 +678,7 @@ namespace Godot.Bridge
                 _scriptTypeBiMap.ReadWriteLock.EnterWriteLock();
                 try
                 {
+                    _scriptTypeBiMap.Remove(scriptPtr);
                     _scriptTypeBiMap.Add(scriptPtr, scriptType);
                 }
                 finally
