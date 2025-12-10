@@ -1,0 +1,65 @@
+#define CS_INDENT "    " // 4 whitespaces
+
+#define INDENT1 CS_INDENT
+#define INDENT2 INDENT1 INDENT1
+#define INDENT3 INDENT2 INDENT1
+#define INDENT4 INDENT3 INDENT1
+
+#define MEMBER_BEGIN "\n" INDENT1
+
+#define OPEN_BLOCK "{\n"
+#define CLOSE_BLOCK "}\n"
+
+#define OPEN_BLOCK_L1 INDENT1 OPEN_BLOCK
+#define OPEN_BLOCK_L2 INDENT2 OPEN_BLOCK
+#define OPEN_BLOCK_L3 INDENT3 OPEN_BLOCK
+#define CLOSE_BLOCK_L1 INDENT1 CLOSE_BLOCK
+#define CLOSE_BLOCK_L2 INDENT2 CLOSE_BLOCK
+#define CLOSE_BLOCK_L3 INDENT3 CLOSE_BLOCK
+
+#define BINDINGS_GLOBAL_SCOPE_CLASS "GD"
+#define BINDINGS_NATIVE_NAME_FIELD "NativeName"
+
+#define BINDINGS_CLASS_CONSTRUCTOR "Constructors"
+#define BINDINGS_CLASS_CONSTRUCTOR_EDITOR "EditorConstructors"
+#define BINDINGS_CLASS_CONSTRUCTOR_DICTIONARY "BuiltInMethodConstructors"
+
+#define CS_PARAM_MEMORYOWN "memoryOwn"
+#define CS_PARAM_METHODBIND "method"
+#define CS_PARAM_INSTANCE "ptr"
+#define CS_STATIC_METHOD_GETINSTANCE "GetPtr"
+#define CS_METHOD_CALL "Call"
+#define CS_PROPERTY_SINGLETON "Singleton"
+#define CS_SINGLETON_INSTANCE_SUFFIX "Instance"
+#define CS_METHOD_INVOKE_GODOT_CLASS_METHOD "InvokeGodotClassMethod"
+#define CS_METHOD_HAS_GODOT_CLASS_METHOD "HasGodotClassMethod"
+#define CS_METHOD_HAS_GODOT_CLASS_SIGNAL "HasGodotClassSignal"
+
+#define CS_STATIC_FIELD_NATIVE_CTOR "NativeCtor"
+#define CS_STATIC_FIELD_METHOD_BIND_PREFIX "MethodBind"
+#define CS_STATIC_FIELD_METHOD_PROXY_NAME_PREFIX "MethodProxyName_"
+#define CS_STATIC_FIELD_SIGNAL_PROXY_NAME_PREFIX "SignalProxyName_"
+
+#define ICALL_PREFIX "godot_icall_"
+#define ICALL_CLASSDB_GET_METHOD "ClassDB_get_method"
+#define ICALL_CLASSDB_GET_METHOD_WITH_COMPATIBILITY "ClassDB_get_method_with_compatibility"
+#define ICALL_CLASSDB_GET_CONSTRUCTOR "ClassDB_get_constructor"
+
+#define C_LOCAL_RET "ret"
+#define C_LOCAL_VARARG_RET "vararg_ret"
+#define C_LOCAL_PTRCALL_ARGS "call_args"
+
+#define C_CLASS_NATIVE_FUNCS "NativeFuncs"
+#define C_NS_MONOUTILS "InteropUtils"
+#define C_METHOD_UNMANAGED_GET_MANAGED C_NS_MONOUTILS ".UnmanagedGetManaged"
+#define C_METHOD_ENGINE_GET_SINGLETON C_NS_MONOUTILS ".EngineGetSingleton"
+
+#define C_NS_MONOMARSHAL "Marshaling"
+#define C_METHOD_MONOSTR_TO_GODOT C_NS_MONOMARSHAL ".ConvertStringToNative"
+#define C_METHOD_MONOSTR_FROM_GODOT C_NS_MONOMARSHAL ".ConvertStringToManaged"
+#define C_METHOD_MONOARRAY_TO(m_type) C_NS_MONOMARSHAL ".ConvertSystemArrayToNative" #m_type
+#define C_METHOD_MONOARRAY_FROM(m_type) C_NS_MONOMARSHAL ".ConvertNative" #m_type "ToSystemArray"
+#define C_METHOD_MANAGED_TO_CALLABLE C_NS_MONOMARSHAL ".ConvertCallableToNative"
+#define C_METHOD_MANAGED_FROM_CALLABLE C_NS_MONOMARSHAL ".ConvertCallableToManaged"
+#define C_METHOD_MANAGED_TO_SIGNAL C_NS_MONOMARSHAL ".ConvertSignalToNative"
+#define C_METHOD_MANAGED_FROM_SIGNAL C_NS_MONOMARSHAL ".ConvertSignalToManaged"

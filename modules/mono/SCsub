@@ -18,6 +18,7 @@ env_mono.add_source_files(env.modules_sources, "*.cpp")
 env_mono.add_source_files(env.modules_sources, "glue/*.cpp")
 env_mono.add_source_files(env.modules_sources, "mono_gd/*.cpp")
 env_mono.add_source_files(env.modules_sources, "utils/*.cpp")
+env_mono.add_source_files(env.modules_sources, "runtime/*.cpp")
 
 if env.editor_build:
     env_mono.add_source_files(env.modules_sources, "editor/*.cpp")

@@ -31,6 +31,7 @@
 #include "register_types.h"
 
 #include "csharp_script.h"
+#include "runtime/runtime_bindings_generator.h"
 
 #include "core/config/engine.h"
 
@@ -46,6 +47,7 @@ void initialize_mono_module(ModuleInitializationLevel p_level) {
 	}
 
 	GDREGISTER_CLASS(CSharpScript);
+	GDREGISTER_CLASS(RuntimeBindingsGenerator);
 
 	_godotsharp = memnew(MonoBind::GodotSharp);
 
