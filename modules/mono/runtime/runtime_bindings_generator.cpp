@@ -37,11 +37,6 @@ void RuntimeBindingsGenerator::_log(const char *p_format, ...) {
 	}
 }
 
-void RuntimeBindingsGenerator::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("generate_object_type", "class_list"),
-			&RuntimeBindingsGenerator::generate_object_type);
-}
-
 Error RuntimeBindingsGenerator::_save_file(const String &p_path, const StringBuilder &p_content) {
 	Ref<FileAccess> file = FileAccess::open(p_path, FileAccess::WRITE);
 	ERR_FAIL_COND_V_MSG(file.is_null(), ERR_FILE_CANT_WRITE, "Cannot open file: '" + p_path + "'.");
