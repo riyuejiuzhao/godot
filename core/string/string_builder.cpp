@@ -96,3 +96,13 @@ String StringBuilder::as_string() const {
 
 	return string;
 }
+
+StringBuilder &operator<<(StringBuilder &r_sb, const String &p_string) {
+	r_sb.append(p_string);
+	return r_sb;
+}
+
+StringBuilder &operator<<(StringBuilder &r_sb, const char *p_cstring) {
+	r_sb.append(p_cstring);
+	return r_sb;
+}

@@ -62,16 +62,6 @@ class BindingsGenerator {
 	void _initialize_blacklisted_methods();
 	void _initialize_compat_singletons();
 
-	const RuntimeBindingsGenerator::ConstantInterface *find_constant_by_name(const String &p_name, const List<RuntimeBindingsGenerator::ConstantInterface> &p_constants) const {
-		for (const RuntimeBindingsGenerator::ConstantInterface &E : p_constants) {
-			if (E.name == p_name) {
-				return &E;
-			}
-		}
-
-		return nullptr;
-	}
-
 	inline String get_arg_unique_sig(const RuntimeBindingsGenerator::TypeInterface &p_type) {
 		// For parameters, we treat reference and non-reference derived types the same.
 		if (p_type.is_object_type) {
@@ -104,8 +94,8 @@ class BindingsGenerator {
 		return p_type->name;
 	}
 
-	String bbcode_to_text(const String &p_bbcode, const RuntimeBindingsGenerator::TypeInterface *p_itype);
-	String bbcode_to_xml(const String &p_bbcode, const RuntimeBindingsGenerator::TypeInterface *p_itype, bool p_is_signal = false);
+	//String bbcode_to_text(const String &p_bbcode, const RuntimeBindingsGenerator::TypeInterface *p_itype);
+	//String bbcode_to_xml(const String &p_bbcode, const RuntimeBindingsGenerator::TypeInterface *p_itype, bool p_is_signal = false);
 
 	void _append_text_method(StringBuilder &p_output, const RuntimeBindingsGenerator::TypeInterface *p_target_itype, const StringName &p_target_cname, const String &p_link_target, const Vector<String> &p_link_target_parts);
 	void _append_text_member(StringBuilder &p_output, const RuntimeBindingsGenerator::TypeInterface *p_target_itype, const StringName &p_target_cname, const String &p_link_target, const Vector<String> &p_link_target_parts);
@@ -127,25 +117,21 @@ class BindingsGenerator {
 
 	bool _validate_api_type(const RuntimeBindingsGenerator::TypeInterface *p_target_itype, const RuntimeBindingsGenerator::TypeInterface *p_source_itype);
 
-
 	Error _populate_method_icalls_table(const RuntimeBindingsGenerator::TypeInterface &p_itype);
 
-	const RuntimeBindingsGenerator::TypeInterface *_get_type_or_null(const RuntimeBindingsGenerator::TypeReference &p_typeref);
-	const RuntimeBindingsGenerator::TypeInterface *_get_type_or_singleton_or_null(const RuntimeBindingsGenerator::TypeReference &p_typeref);
+	//const RuntimeBindingsGenerator::TypeInterface *_get_type_or_null(const RuntimeBindingsGenerator::TypeReference &p_typeref);
+	//const RuntimeBindingsGenerator::TypeInterface *_get_type_or_singleton_or_null(const RuntimeBindingsGenerator::TypeReference &p_typeref);
 
-	const String _get_generic_type_parameters(const RuntimeBindingsGenerator::TypeInterface &p_itype, const List<RuntimeBindingsGenerator::TypeReference> &p_generic_type_parameters);
+	//const String _get_generic_type_parameters(const RuntimeBindingsGenerator::TypeInterface &p_itype, const List<RuntimeBindingsGenerator::TypeReference> &p_generic_type_parameters);
 
-
-	bool _arg_default_value_is_assignable_to_type(const Variant &p_val, const RuntimeBindingsGenerator::TypeInterface &p_arg_type);
+	//bool _arg_default_value_is_assignable_to_type(const Variant &p_val, const RuntimeBindingsGenerator::TypeInterface &p_arg_type);
 
 	bool _populate_object_type_interfaces();
 	void _populate_builtin_type_interfaces();
 
 	void _populate_global_constants();
 
-	//bool _method_has_conflicting_signature(const RuntimeBindingsGenerator::MethodInterface &p_imethod, const RuntimeBindingsGenerator::TypeInterface &p_itype);
-
-	Error _generate_cs_type(const RuntimeBindingsGenerator::TypeInterface &itype, const String &p_output_file);
+	//Error _generate_cs_type(const RuntimeBindingsGenerator::TypeInterface &itype, const String &p_output_file);
 
 	Error _generate_cs_property(const RuntimeBindingsGenerator::TypeInterface &p_itype, const RuntimeBindingsGenerator::PropertyInterface &p_iprop, StringBuilder &p_output);
 	Error _generate_cs_method(const RuntimeBindingsGenerator::TypeInterface &p_itype, const RuntimeBindingsGenerator::MethodInterface &p_imethod, int &p_method_bind_count, StringBuilder &p_output, bool p_use_span);
@@ -156,7 +142,7 @@ class BindingsGenerator {
 	void _generate_array_extensions(StringBuilder &p_output);
 	void _generate_global_constants(StringBuilder &p_output);
 
-	Error _save_file(const String &p_path, const StringBuilder &p_content);
+	//Error _save_file(const String &p_path, const StringBuilder &p_content);
 
 	void _initialize();
 

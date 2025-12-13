@@ -732,7 +732,7 @@ public:
 
 	RuntimeBindingsGenerator();
 
-	bool populate_object_type_interfaces(const Array &p_class_list);
+	bool generate_object_type(const Array &p_class_list);
 
 protected:
 	static void _bind_methods();
@@ -761,4 +761,141 @@ private:
 	bool _populate_object_type_interfaces(const LocalVector<StringName> &class_list,
 			HashMap<StringName, TypeInterface> &out_obj_types,
 			HashMap<StringName, TypeInterface> &out_enum_types);
+	Error _generate_cs_type(const TypeInterface &itype, const String &p_output_file,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const List<ConstantInterface> &global_constants,
+			const List<EnumInterface> &global_enums,
+			const HashMap<StringName, TypeInterface> &builtin_types,
+			const HashMap<StringName, TypeInterface> &enum_types,
+			const HashMap<const MethodInterface *, const InternalCall *> &method_icalls_map);
+	String bbcode_to_xml(const String &p_bbcode, const TypeInterface *p_itype,
+			const HashMap<StringName, TypeInterface> &builtin_types,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const HashMap<StringName, TypeInterface> &enum_types,
+			const List<ConstantInterface> &global_constants,
+			const List<EnumInterface> &global_enums,
+			bool p_is_signal = false);
+	const TypeInterface *_get_type_or_null(const TypeReference &p_typeref,
+			const HashMap<StringName, TypeInterface> &builtin_types,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const HashMap<StringName, TypeInterface> &enum_types);
+	bool _validate_api_type(const TypeInterface *p_target_itype, const TypeInterface *p_source_itype);
+	String bbcode_to_text(const String &p_bbcode, const TypeInterface *p_itype,
+			const List<ConstantInterface> &global_constants,
+			const List<EnumInterface> &global_enums,
+			const HashMap<StringName, TypeInterface> &builtin_types,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const HashMap<StringName, TypeInterface> &enum_types);
+	void _append_text_undeclared(StringBuilder &p_output, const String &p_link_target);
+	const TypeInterface *_get_type_or_singleton_or_null(const TypeReference &p_typeref,
+			const HashMap<StringName, TypeInterface> &builtin_types,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const HashMap<StringName, TypeInterface> &enum_types);
+	const String _get_generic_type_parameters(const TypeInterface &p_itype,
+			const List<TypeReference> &p_generic_type_parameters,
+			const HashMap<StringName, TypeInterface> &builtin_types,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const HashMap<StringName, TypeInterface> &enum_types);
+	void _append_text_method(StringBuilder &p_output, const TypeInterface *p_target_itype,
+			const StringName &p_target_cname, const String &p_link_target, const Vector<String> &p_link_target_parts,
+			const HashMap<StringName, TypeInterface> &builtin_types,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const HashMap<StringName, TypeInterface> &enum_types);
+	void _append_text_member(StringBuilder &p_output, const TypeInterface *p_target_itype,
+			const StringName &p_target_cname, const String &p_link_target, const Vector<String> &p_link_target_parts,
+			const HashMap<StringName, TypeInterface> &builtin_types, const HashMap<StringName, TypeInterface> &obj_types,
+			const HashMap<StringName, TypeInterface> &enum_types);
+	void _append_text_signal(StringBuilder &p_output, const TypeInterface *p_target_itype,
+			const StringName &p_target_cname, const String &p_link_target, const Vector<String> &p_link_target_parts);
+	void _append_text_enum(StringBuilder &p_output, const TypeInterface *p_target_itype,
+			const StringName &p_target_cname, const String &p_link_target,
+			const Vector<String> &p_link_target_parts,
+			const HashMap<StringName, TypeInterface> &enum_types);
+	void _append_text_constant(StringBuilder &p_output,
+			const TypeInterface *p_target_itype, const StringName &p_target_cname,
+			const String &p_link_target, const Vector<String> &p_link_target_parts,
+			const List<ConstantInterface> &global_constants,
+			const List<EnumInterface> &global_enums,
+			const HashMap<StringName, TypeInterface> &obj_types);
+	void _append_text_constant_in_global_scope(StringBuilder &p_output,
+			const String &p_target_cname, const String &p_link_target,
+			const List<ConstantInterface> &global_constants,
+			const List<EnumInterface> &global_enums);
+	void _append_xml_undeclared(StringBuilder &p_xml_output, const String &p_link_target);
+	void _append_text_param(StringBuilder &p_output, const String &p_link_target);
+	Error _generate_cs_property(const TypeInterface &p_itype,
+			const PropertyInterface &p_iprop, StringBuilder &p_output,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const HashMap<StringName, TypeInterface> &builtin_types,
+			const HashMap<StringName, TypeInterface> &enum_types,
+			const List<ConstantInterface> &global_constants,
+			const List<EnumInterface> &global_enums);
+	Error _generate_cs_method(const TypeInterface &p_itype, const MethodInterface &p_imethod,
+			int &p_method_bind_count, StringBuilder &p_output, bool p_use_span,
+			const List<ConstantInterface> &global_constants,
+			const List<EnumInterface> &global_enums,
+			const HashMap<StringName, TypeInterface> &builtin_types,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const HashMap<StringName, TypeInterface> &enum_types,
+			const HashMap<const MethodInterface *, const InternalCall *> &method_icalls_map);
+	bool _arg_default_value_is_assignable_to_type(const Variant &p_val,
+			const TypeInterface &p_arg_type);
+	Error _generate_cs_signal(const TypeInterface &p_itype, const SignalInterface &p_isignal,
+			StringBuilder &p_output, const List<ConstantInterface> &global_constants,
+			const List<EnumInterface> &global_enums,
+			const HashMap<StringName, TypeInterface> &builtin_types,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const HashMap<StringName, TypeInterface> &enum_types);
+	Error _generate_cs_native_calls(const InternalCall &p_icall, StringBuilder &r_output,
+			const HashMap<StringName, TypeInterface> &builtin_types,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const HashMap<StringName, TypeInterface> &enum_types);
+	void _append_xml_method(StringBuilder &p_xml_output, const TypeInterface *p_target_itype,
+			const StringName &p_target_cname, const String &p_link_target,
+			const Vector<String> &p_link_target_parts, const TypeInterface *p_source_itype,
+			const HashMap<StringName, TypeInterface> &builtin_types,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const HashMap<StringName, TypeInterface> &enum_types);
+	void _append_xml_member(StringBuilder &p_xml_output, const TypeInterface *p_target_itype,
+			const StringName &p_target_cname, const String &p_link_target,
+			const Vector<String> &p_link_target_parts, const TypeInterface *p_source_itype,
+			const HashMap<StringName, TypeInterface> &builtin_types,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const HashMap<StringName, TypeInterface> &enum_types);
+	void _append_xml_signal(StringBuilder &p_xml_output, const TypeInterface *p_target_itype,
+			const StringName &p_target_cname, const String &p_link_target,
+			const Vector<String> &p_link_target_parts, const TypeInterface *p_source_itype);
+	void _append_xml_enum(StringBuilder &p_xml_output, const TypeInterface *p_target_itype,
+			const StringName &p_target_cname, const String &p_link_target,
+			const Vector<String> &p_link_target_parts, const TypeInterface *p_source_itype,
+			const HashMap<StringName, TypeInterface> &enum_types);
+	void _append_xml_constant(StringBuilder &p_xml_output,
+			const TypeInterface *p_target_itype, const StringName &p_target_cname,
+			const String &p_link_target, const Vector<String> &p_link_target_parts,
+			const HashMap<StringName, TypeInterface> &obj_types,
+			const List<ConstantInterface> &global_constants,
+			const List<EnumInterface> &global_enums);
+	void _append_xml_constant_in_global_scope(StringBuilder &p_xml_output,
+			const String &p_target_cname, const String &p_link_target,
+			const List<ConstantInterface> &global_constants,
+			const List<EnumInterface> &global_enums);
+	void _append_xml_param(StringBuilder &p_xml_output, const String &p_link_target,
+			bool p_is_signal);
+	Error _save_file(const String &p_path, const StringBuilder &p_content);
+
+	const ConstantInterface *find_constant_by_name(const String &p_name,
+			const List<ConstantInterface> &p_constants) const {
+		for (const ConstantInterface &E : p_constants) {
+			if (E.name == p_name) {
+				return &E;
+			}
+		}
+
+		return nullptr;
+	}
 };
+
+String fix_doc_description(const String &p_bbcode);
+
+extern const Vector<String> langword_check;
+extern const Vector<String> prop_allowed_inherited_member_hiding;

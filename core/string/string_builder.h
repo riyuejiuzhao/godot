@@ -77,3 +77,6 @@ public:
 		return as_string();
 	}
 };
+
+StringBuilder &operator<<(StringBuilder &r_sb, const String &p_string);
+StringBuilder &operator<<(StringBuilder &r_sb, const char *p_cstring);
