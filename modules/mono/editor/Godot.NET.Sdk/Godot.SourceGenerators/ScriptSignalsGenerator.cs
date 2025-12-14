@@ -347,7 +347,7 @@ namespace Godot.SourceGenerators
                 source.Append("    /// <inheritdoc/>\n");
                 source.Append("    [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]\n");
                 source.Append(
-                    "    protected override bool HasGodotClassSignal(in godot_string_name signal)\n    {\n");
+                    "    public override bool HasGodotClassSignal(in godot_string_name signal)\n    {\n");
 
                 foreach (var signal in godotSignalDelegates)
                 {

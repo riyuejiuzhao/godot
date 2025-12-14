@@ -209,7 +209,7 @@ namespace Godot.SourceGenerators
             {
                 source.Append("    /// <inheritdoc/>\n");
                 source.Append("    [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]\n");
-                source.Append("    protected override bool InvokeGodotClassMethod(in godot_string_name method, ");
+                source.Append("    public override bool InvokeGodotClassMethod(in godot_string_name method, ");
                 source.Append("NativeVariantPtrArgs args, out godot_variant ret)\n    {\n");
 
                 foreach (var method in godotClassMethods)
@@ -251,7 +251,7 @@ namespace Godot.SourceGenerators
             {
                 source.Append("    /// <inheritdoc/>\n");
                 source.Append("    [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]\n");
-                source.Append("    protected override bool HasGodotClassMethod(in godot_string_name method)\n    {\n");
+                source.Append("    public override bool HasGodotClassMethod(in godot_string_name method)\n    {\n");
 
                 foreach (string methodName in distinctMethodNames)
                 {

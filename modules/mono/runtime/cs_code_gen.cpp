@@ -2099,7 +2099,7 @@ Error RuntimeBindingsGenerator::_generate_cs_type(const TypeInterface &itype, co
 				   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 
 			// Add.. em.. trick constructor. Sort of.
-			output.append(MEMBER_BEGIN "internal ");
+			output.append(MEMBER_BEGIN "public ");
 			output.append(itype.proxy_name);
 			output.append("(bool " CS_PARAM_MEMORYOWN ") : base(" CS_PARAM_MEMORYOWN ") { }\n");
 		}
@@ -2176,7 +2176,7 @@ Error RuntimeBindingsGenerator::_generate_cs_type(const TypeInterface &itype, co
 		// Avoid raising diagnostics because of calls to obsolete methods.
 		output << "#pragma warning disable CS0618 // Member is obsolete\n";
 
-		output << INDENT1 "protected internal " << (is_derived_type ? "override" : "virtual")
+		output << INDENT1 "public " << (is_derived_type ? "override" : "virtual")
 			   << " bool " CS_METHOD_INVOKE_GODOT_CLASS_METHOD "(in godot_string_name method, "
 			   << "NativeVariantPtrArgs args, out godot_variant ret)\n"
 			   << INDENT1 "{\n";
@@ -2269,7 +2269,7 @@ Error RuntimeBindingsGenerator::_generate_cs_type(const TypeInterface &itype, co
 			   << INDENT1 "/// </summary>\n"
 			   << INDENT1 "/// <param name=\"method\">Name of the method to check for.</param>\n";
 
-		output << MEMBER_BEGIN "protected internal " << (is_derived_type ? "override" : "virtual")
+		output << MEMBER_BEGIN "public " << (is_derived_type ? "override" : "virtual")
 			   << " bool " CS_METHOD_HAS_GODOT_CLASS_METHOD "(in godot_string_name method)\n"
 			   << INDENT1 "{\n";
 
@@ -2308,7 +2308,7 @@ Error RuntimeBindingsGenerator::_generate_cs_type(const TypeInterface &itype, co
 			   << INDENT1 "/// </summary>\n"
 			   << INDENT1 "/// <param name=\"signal\">Name of the signal to check for.</param>\n";
 
-		output << MEMBER_BEGIN "protected internal " << (is_derived_type ? "override" : "virtual")
+		output << MEMBER_BEGIN "public " << (is_derived_type ? "override" : "virtual")
 			   << " bool " CS_METHOD_HAS_GODOT_CLASS_SIGNAL "(in godot_string_name signal)\n"
 			   << INDENT1 "{\n";
 

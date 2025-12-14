@@ -17,7 +17,7 @@ namespace Godot
 
         private static readonly Dictionary<Type, StringName?> _nativeNames = new Dictionary<Type, StringName?>();
 
-        internal IntPtr NativePtr;
+        public IntPtr NativePtr;
         private bool _memoryOwn;
 
         private WeakReference<GodotObject>? _weakReferenceToSelf;
@@ -44,7 +44,7 @@ namespace Godot
             }
         }
 
-        internal unsafe void ConstructAndInitialize(
+        protected unsafe void ConstructAndInitialize(
             delegate* unmanaged<godot_bool, IntPtr> nativeCtor,
             StringName nativeName,
             Type cachedType,
@@ -315,7 +315,7 @@ namespace Godot
             return methodBind;
         }
 
-        internal static unsafe delegate* unmanaged<godot_bool, IntPtr> ClassDB_get_constructor(StringName type)
+        protected static unsafe delegate* unmanaged<godot_bool, IntPtr> ClassDB_get_constructor(StringName type)
         {
             // for some reason the '??' operator doesn't support 'delegate*'
             var typeSelf = (godot_string_name)type.NativeValue;
