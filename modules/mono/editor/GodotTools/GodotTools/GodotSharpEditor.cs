@@ -71,6 +71,21 @@ namespace GodotTools
 
         private bool CreateProjectSolution()
         {
+            RuntimeBindingsGenerator generator = new();
+            var classNames = new Godot.Collections.Array();
+
+            var classList = ClassDB.GetClassList();
+            foreach (var className in classList)
+            {
+                var apiType = ClassDB.ClassGetApiType(className);
+                if (apiType == ClassDB.ApiType.Extension || apiType == ClassDB.ApiType.EditorExtension)
+                {
+                    classNames.Add(className);
+                }
+            }
+
+            generator.GenerateObjectType(classNames);
+
             string? errorMessage = null;
             using (var pr = new EditorProgress("create_csharp_solution", "Generating solution...".TTR(), 2))
             {
