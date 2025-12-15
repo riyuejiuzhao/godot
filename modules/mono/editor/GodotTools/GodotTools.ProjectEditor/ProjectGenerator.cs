@@ -14,7 +14,7 @@ namespace GodotTools.ProjectEditor
 
         public static string GodotMinimumRequiredTfm => "net8.0";
 
-        public static ProjectRootElement GenGameProject(string name)
+        public static ProjectRootElement GenGameProject(string name, bool hasGdExtension)
         {
             if (name.Length == 0)
                 throw new ArgumentException("Project name is empty.", nameof(name));
@@ -32,6 +32,12 @@ namespace GodotTools.ProjectEditor
 
             mainGroup.AddProperty("EnableDynamicLoading", "true");
 
+
+            if (hasGdExtension)
+            {
+                mainGroup.AddProperty("AllowUnsafeBlocks", "true");
+            }
+
             string sanitizedName = IdentifierUtils.SanitizeQualifiedIdentifier(name, allowEmptyIdentifiers: true);
 
             // If the name is not a valid namespace, manually set RootNamespace to a sanitized one.
@@ -41,14 +47,14 @@ namespace GodotTools.ProjectEditor
             return root;
         }
 
-        public static string GenAndSaveGameProject(string dir, string name)
+        public static string GenAndSaveGameProject(string dir, string name, bool hasGdExtension)
         {
             if (name.Length == 0)
                 throw new ArgumentException("Project name is empty.", nameof(name));
 
             string path = Path.Combine(dir, name + ".csproj");
 
-            var root = GenGameProject(name);
+            var root = GenGameProject(name, hasGdExtension);
 
             // Save (without BOM)
             root.Save(path, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));

@@ -732,7 +732,7 @@ public:
 
 	RuntimeBindingsGenerator();
 
-	bool generate_object_type(const Array &p_class_list);
+	bool generate_object_type(const Array &p_class_list, bool is_gd_extension);
 
 protected:
 	static void _bind_methods();
@@ -767,7 +767,8 @@ private:
 			const List<EnumInterface> &global_enums,
 			const HashMap<StringName, TypeInterface> &builtin_types,
 			const HashMap<StringName, TypeInterface> &enum_types,
-			const HashMap<const MethodInterface *, const InternalCall *> &method_icalls_map);
+			const HashMap<const MethodInterface *, const InternalCall *> &method_icalls_map,
+			bool is_gd_extension);
 	String bbcode_to_xml(const String &p_bbcode, const TypeInterface *p_itype,
 			const HashMap<StringName, TypeInterface> &builtin_types,
 			const HashMap<StringName, TypeInterface> &obj_types,

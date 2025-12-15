@@ -2,11 +2,11 @@
 #include <core/io/dir_access.h>
 
 void RuntimeBindingsGenerator::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("generate_object_type", "class_list"),
+	ClassDB::bind_method(D_METHOD("generate_object_type", "class_list", "is_gd_extension"),
 			&RuntimeBindingsGenerator::generate_object_type);
 }
 
-bool RuntimeBindingsGenerator::generate_object_type(const Array &p_class_list) {
+bool RuntimeBindingsGenerator::generate_object_type(const Array &p_class_list, bool is_gd_extension) {
 	HashMap<StringName, TypeInterface> obj_types, enum_types;
 
 	LocalVector<StringName> all_class_list;
@@ -46,7 +46,7 @@ bool RuntimeBindingsGenerator::generate_object_type(const Array &p_class_list) {
 
 		String output_file = output_base_dir.path_join(itype.proxy_name + ".cs");
 		Error err = _generate_cs_type(itype, output_file, obj_types, global_constants,
-				global_enums, builtin_types, enum_types, method_icalls_map);
+				global_enums, builtin_types, enum_types, method_icalls_map,is_gd_extension);
 
 		if (err != OK) {
 			ERR_PRINT("Failed to generate C# type for: " + itype.name);

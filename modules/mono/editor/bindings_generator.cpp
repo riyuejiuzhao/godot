@@ -340,7 +340,7 @@ Error BindingsGenerator::generate_cs_core_project(const String &p_proj_dir) {
 
 		String output_file = Path::join(godot_objects_gen_dir, itype.proxy_name + ".cs");
 		Error err = generator._generate_cs_type(itype, output_file, obj_types, global_constants, global_enums,
-				builtin_types, enum_types, method_icalls_map);
+				builtin_types, enum_types, method_icalls_map, false);
 
 		if (err == ERR_SKIP) {
 			continue;
@@ -511,7 +511,7 @@ Error BindingsGenerator::generate_cs_editor_project(const String &p_proj_dir) {
 
 		String output_file = Path::join(godot_objects_gen_dir, itype.proxy_name + ".cs");
 		Error err = generator._generate_cs_type(itype, output_file, obj_types, global_constants, global_enums,
-				builtin_types, enum_types, method_icalls_map);
+				builtin_types, enum_types, method_icalls_map, false);
 
 		if (err == ERR_SKIP) {
 			continue;

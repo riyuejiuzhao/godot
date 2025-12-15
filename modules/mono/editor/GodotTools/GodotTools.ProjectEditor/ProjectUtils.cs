@@ -75,7 +75,7 @@ namespace GodotTools.ProjectEditor
             if (!string.IsNullOrEmpty(origRoot.Sdk))
                 return;
 
-            project.Root = ProjectGenerator.GenGameProject(projectName);
+            project.Root = ProjectGenerator.GenGameProject(projectName, false);
             project.Root.FullPath = origRoot.FullPath;
             project.HasUnsavedChanges = true;
         }

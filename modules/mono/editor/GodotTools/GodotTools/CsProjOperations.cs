@@ -6,11 +6,11 @@ namespace GodotTools
 {
     public static class CsProjOperations
     {
-        public static string GenerateGameProject(string dir, string name)
+        public static string GenerateGameProject(string dir, string name, bool hasGdExtension)
         {
             try
             {
-                return ProjectGenerator.GenAndSaveGameProject(dir, name);
+                return ProjectGenerator.GenAndSaveGameProject(dir, name, hasGdExtension);
             }
             catch (Exception e)
             {

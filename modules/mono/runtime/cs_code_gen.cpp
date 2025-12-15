@@ -1831,7 +1831,8 @@ Error RuntimeBindingsGenerator::_generate_cs_type(const TypeInterface &itype, co
 		const List<EnumInterface> &global_enums,
 		const HashMap<StringName, TypeInterface> &builtin_types,
 		const HashMap<StringName, TypeInterface> &enum_types,
-		const HashMap<const MethodInterface *, const InternalCall *> &method_icalls_map) {
+		const HashMap<const MethodInterface *, const InternalCall *> &method_icalls_map,
+		bool is_gd_extension) {
 	CRASH_COND(!itype.is_object_type);
 
 	bool is_derived_type = itype.base_name != StringName();
@@ -2338,71 +2339,73 @@ Error RuntimeBindingsGenerator::_generate_cs_type(const TypeInterface &itype, co
 	//Generate StringName for all class members
 	bool is_inherit = !itype.is_singleton && obj_types.has(itype.base_name);
 	//PropertyName
-	output << MEMBER_BEGIN "/// <summary>\n"
-		   << INDENT1 "/// Cached StringNames for the properties and fields contained in this class, for fast lookup.\n"
-		   << INDENT1 "/// </summary>\n";
-	if (is_inherit) {
-		output << INDENT1 "public new class PropertyName : " << obj_types[itype.base_name].proxy_name << ".PropertyName";
-	} else {
-		output << INDENT1 "public class PropertyName";
-	}
-	output << "\n"
-		   << INDENT1 "{\n";
-	for (const PropertyInterface &iprop : itype.properties) {
-		output << INDENT2 "/// <summary>\n"
-			   << INDENT2 "/// Cached name for the '" << iprop.cname << "' property.\n"
-			   << INDENT2 "/// </summary>\n"
-			   << INDENT2 "public static "
-			   << (prop_allowed_inherited_member_hiding.has(itype.proxy_name + ".PropertyName." + iprop.proxy_name) ? "new " : "")
-			   << "readonly StringName " << iprop.proxy_name << " = \"" << iprop.cname << "\";\n";
-	}
-	output << INDENT1 "}\n";
-	//MethodName
-	output << MEMBER_BEGIN "/// <summary>\n"
-		   << INDENT1 "/// Cached StringNames for the methods contained in this class, for fast lookup.\n"
-		   << INDENT1 "/// </summary>\n";
-	if (is_inherit) {
-		output << INDENT1 "public new class MethodName : " << obj_types[itype.base_name].proxy_name << ".MethodName";
-	} else {
-		output << INDENT1 "public class MethodName";
-	}
-	output << "\n"
-		   << INDENT1 "{\n";
-	HashMap<String, StringName> method_names;
-	for (const MethodInterface &imethod : itype.methods) {
-		if (method_names.has(imethod.proxy_name)) {
-			ERR_FAIL_COND_V_MSG(method_names[imethod.proxy_name] != imethod.cname, ERR_BUG, "Method name '" + imethod.proxy_name + "' already exists with a different value.");
-			continue;
+	if (!is_gd_extension) {
+		output << MEMBER_BEGIN "/// <summary>\n"
+			   << INDENT1 "/// Cached StringNames for the properties and fields contained in this class, for fast lookup.\n"
+			   << INDENT1 "/// </summary>\n";
+		if (is_inherit) {
+			output << INDENT1 "public new class PropertyName : " << obj_types[itype.base_name].proxy_name << ".PropertyName";
+		} else {
+			output << INDENT1 "public class PropertyName";
 		}
-		method_names[imethod.proxy_name] = imethod.cname;
-		output << INDENT2 "/// <summary>\n"
-			   << INDENT2 "/// Cached name for the '" << imethod.cname << "' method.\n"
-			   << INDENT2 "/// </summary>\n"
-			   << INDENT2 "public static "
-			   << (prop_allowed_inherited_member_hiding.has(itype.proxy_name + ".MethodName." + imethod.proxy_name) ? "new " : "")
-			   << "readonly StringName " << imethod.proxy_name << " = \"" << imethod.cname << "\";\n";
+		output << "\n"
+			   << INDENT1 "{\n";
+		for (const PropertyInterface &iprop : itype.properties) {
+			output << INDENT2 "/// <summary>\n"
+				   << INDENT2 "/// Cached name for the '" << iprop.cname << "' property.\n"
+				   << INDENT2 "/// </summary>\n"
+				   << INDENT2 "public static "
+				   << (prop_allowed_inherited_member_hiding.has(itype.proxy_name + ".PropertyName." + iprop.proxy_name) ? "new " : "")
+				   << "readonly StringName " << iprop.proxy_name << " = \"" << iprop.cname << "\";\n";
+		}
+		output << INDENT1 "}\n";
+		//MethodName
+		output << MEMBER_BEGIN "/// <summary>\n"
+			   << INDENT1 "/// Cached StringNames for the methods contained in this class, for fast lookup.\n"
+			   << INDENT1 "/// </summary>\n";
+		if (is_inherit) {
+			output << INDENT1 "public new class MethodName : " << obj_types[itype.base_name].proxy_name << ".MethodName";
+		} else {
+			output << INDENT1 "public class MethodName";
+		}
+		output << "\n"
+			   << INDENT1 "{\n";
+		HashMap<String, StringName> method_names;
+		for (const MethodInterface &imethod : itype.methods) {
+			if (method_names.has(imethod.proxy_name)) {
+				ERR_FAIL_COND_V_MSG(method_names[imethod.proxy_name] != imethod.cname, ERR_BUG, "Method name '" + imethod.proxy_name + "' already exists with a different value.");
+				continue;
+			}
+			method_names[imethod.proxy_name] = imethod.cname;
+			output << INDENT2 "/// <summary>\n"
+				   << INDENT2 "/// Cached name for the '" << imethod.cname << "' method.\n"
+				   << INDENT2 "/// </summary>\n"
+				   << INDENT2 "public static "
+				   << (prop_allowed_inherited_member_hiding.has(itype.proxy_name + ".MethodName." + imethod.proxy_name) ? "new " : "")
+				   << "readonly StringName " << imethod.proxy_name << " = \"" << imethod.cname << "\";\n";
+		}
+		output << INDENT1 "}\n";
+		//SignalName
+		output << MEMBER_BEGIN "/// <summary>\n"
+			   << INDENT1 "/// Cached StringNames for the signals contained in this class, for fast lookup.\n"
+			   << INDENT1 "/// </summary>\n";
+		if (is_inherit) {
+			output << INDENT1 "public new class SignalName : " << obj_types[itype.base_name].proxy_name << ".SignalName";
+		} else {
+			output << INDENT1 "public class SignalName";
+		}
+		output << "\n"
+			   << INDENT1 "{\n";
+		for (const SignalInterface &isignal : itype.signals_) {
+			output << INDENT2 "/// <summary>\n"
+				   << INDENT2 "/// Cached name for the '" << isignal.cname << "' signal.\n"
+				   << INDENT2 "/// </summary>\n"
+				   << INDENT2 "public static "
+				   << (prop_allowed_inherited_member_hiding.has(itype.proxy_name + ".SignalName." + isignal.proxy_name) ? "new " : "")
+				   << "readonly StringName " << isignal.proxy_name << " = \"" << isignal.cname << "\";\n";
+		}
+		output << INDENT1 "}\n";
 	}
-	output << INDENT1 "}\n";
-	//SignalName
-	output << MEMBER_BEGIN "/// <summary>\n"
-		   << INDENT1 "/// Cached StringNames for the signals contained in this class, for fast lookup.\n"
-		   << INDENT1 "/// </summary>\n";
-	if (is_inherit) {
-		output << INDENT1 "public new class SignalName : " << obj_types[itype.base_name].proxy_name << ".SignalName";
-	} else {
-		output << INDENT1 "public class SignalName";
-	}
-	output << "\n"
-		   << INDENT1 "{\n";
-	for (const SignalInterface &isignal : itype.signals_) {
-		output << INDENT2 "/// <summary>\n"
-			   << INDENT2 "/// Cached name for the '" << isignal.cname << "' signal.\n"
-			   << INDENT2 "/// </summary>\n"
-			   << INDENT2 "public static "
-			   << (prop_allowed_inherited_member_hiding.has(itype.proxy_name + ".SignalName." + isignal.proxy_name) ? "new " : "")
-			   << "readonly StringName " << isignal.proxy_name << " = \"" << isignal.cname << "\";\n";
-	}
-	output << INDENT1 "}\n";
 
 	output.append(CLOSE_BLOCK /* class */);
 

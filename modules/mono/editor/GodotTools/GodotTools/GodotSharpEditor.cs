@@ -74,17 +74,19 @@ namespace GodotTools
             RuntimeBindingsGenerator generator = new();
             var classNames = new Godot.Collections.Array();
 
+            bool hasGdExtension = false;
             var classList = ClassDB.GetClassList();
             foreach (var className in classList)
             {
                 var apiType = ClassDB.ClassGetApiType(className);
                 if (apiType == ClassDB.ApiType.Extension || apiType == ClassDB.ApiType.EditorExtension)
                 {
+                    hasGdExtension = true;
                     classNames.Add(className);
                 }
             }
 
-            generator.GenerateObjectType(classNames);
+            generator.GenerateObjectType(classNames, true);
 
             string? errorMessage = null;
             using (var pr = new EditorProgress("create_csharp_solution", "Generating solution...".TTR(), 2))
@@ -94,7 +96,7 @@ namespace GodotTools
                 string csprojDir = Path.GetDirectoryName(GodotSharpDirs.ProjectCsProjPath)!;
                 string slnDir = Path.GetDirectoryName(GodotSharpDirs.ProjectSlnPath)!;
                 string name = GodotSharpDirs.ProjectAssemblyName;
-                string guid = CsProjOperations.GenerateGameProject(csprojDir, name);
+                string guid = CsProjOperations.GenerateGameProject(csprojDir, name, hasGdExtension);
 
                 if (guid.Length > 0)
                 {
