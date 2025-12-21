@@ -43,8 +43,8 @@
 #include "core/io/dir_access.h"
 #include "core/io/file_access.h"
 #include "core/os/os.h"
-#include "main/main.h"
 #include "core/version.h"
+#include "main/main.h"
 
 StringBuilder &operator<<(StringBuilder &r_sb, const String &p_string) {
 	r_sb.append(p_string);
@@ -934,7 +934,7 @@ void BindingsGenerator::_append_text_member(StringBuilder &p_output, const TypeI
 
 		if (target_iprop) {
 			p_output.append("'");
- 			p_output.append(is_generating_gdextension ? BINDINGS_GDEXTENSION_NAMESPACE : BINDINGS_NAMESPACE);
+			p_output.append(is_generating_gdextension ? BINDINGS_GDEXTENSION_NAMESPACE : BINDINGS_NAMESPACE);
 			p_output.append(".");
 			p_output.append(current_itype->proxy_name);
 			p_output.append(".");
@@ -1868,9 +1868,9 @@ Error BindingsGenerator::generate_cs_core_project(const String &p_proj_dir) {
 		out << MEMBER_BEGIN "internal static bool TriedLoadingGDExtension;\n";
 
 		out << MEMBER_BEGIN "public static GodotObject Invoke(string nativeTypeNameStr, IntPtr nativeObjectPtr)\n"
-		    << INDENT1 OPEN_BLOCK
-		    << INDENT2 "if (" BINDINGS_CLASS_CONSTRUCTOR_DICTIONARY ".TryGetValue(nativeTypeNameStr, out var constructor))\n"
-		    << INDENT3 "return constructor(nativeObjectPtr);\n\n";
+			<< INDENT1 OPEN_BLOCK
+			<< INDENT2 "if (" BINDINGS_CLASS_CONSTRUCTOR_DICTIONARY ".TryGetValue(nativeTypeNameStr, out var constructor))\n"
+			<< INDENT3 "return constructor(nativeObjectPtr);\n\n";
 
 		out << INDENT2 "if (!TriedLoadingGDExtension)\n"
 			<< INDENT3 "LoadGDExtensionMethodConstructors();\n\n";
@@ -1884,46 +1884,46 @@ Error BindingsGenerator::generate_cs_core_project(const String &p_proj_dir) {
 
 		// Unload GDExtension Constructors Method
 		out << INDENT1 << "public static void UnloadGDExtensionMethodConstructors()\n"
-		    << INDENT1 OPEN_BLOCK
-		    << INDENT2 "GD.Print(\"Unloading GdExtension method constructors...\");\n"
+			<< INDENT1 OPEN_BLOCK
+			<< INDENT2 "GD.Print(\"Unloading GdExtension method constructors...\");\n"
 			<< INDENT2 "TriedLoadingGDExtension = false;\n"
-		    << INDENT2 "GDExtensionMethodConstructors.Clear();\n"
-		    << INDENT1 CLOSE_BLOCK;
+			<< INDENT2 "GDExtensionMethodConstructors.Clear();\n"
+			<< INDENT1 CLOSE_BLOCK;
 
 		out << MEMBER_BEGIN "public static void LoadGDExtensionMethodConstructors()\n"
-		    << INDENT1 OPEN_BLOCK
-		    << INDENT2 "GD.Print(\"Loading GdExtension method constructors...\");\n"
+			<< INDENT1 OPEN_BLOCK
+			<< INDENT2 "GD.Print(\"Loading GdExtension method constructors...\");\n"
 			<< INDENT2 "TriedLoadingGDExtension = true;\n"
-		    << INDENT2 "var extensionsAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == \"" BINDINGS_GDEXTENSION_ASSEMBLY_NAME "\");\n"
-		    << INDENT2 "\n"
-		    << INDENT2 "// It's fine if the assembly doesn't exist, not all projects use it.\n"
-		    << INDENT2 "if (extensionsAssembly == null) " OPEN_BLOCK
-		    << INDENT3 "// Assemblies are lazily loaded, it's possible that it exists but isn't referenced by the user project, let's try manually loading it.\n"
+			<< INDENT2 "var extensionsAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == \"" BINDINGS_GDEXTENSION_ASSEMBLY_NAME "\");\n"
+			<< INDENT2 "\n"
+			<< INDENT2 "// It's fine if the assembly doesn't exist, not all projects use it.\n"
+			<< INDENT2 "if (extensionsAssembly == null) " OPEN_BLOCK
+			<< INDENT3 "// Assemblies are lazily loaded, it's possible that it exists but isn't referenced by the user project, let's try manually loading it.\n"
 			<< INDENT3 "try { extensionsAssembly = Assembly.Load(\"" BINDINGS_GDEXTENSION_ASSEMBLY_NAME "\"); }\n"
 			<< INDENT3 "catch (Exception err) " OPEN_BLOCK
-		    << INDENT4 "GD.Print(\n"
+			<< INDENT4 "GD.Print(\n"
 			<< INDENT4 "\t\"Failed to load assembly `" BINDINGS_GDEXTENSION_ASSEMBLY_NAME "`, skipping loading of GDExtension method constructors.\\n\"\n"
 			<< INDENT4 "\t+ \"This is expected if your project does not use the CSharpGDExtension bindings.\\n\"\n"
 			<< INDENT4 "\t+ $\"Error message: \\n\\t{err}\"\n"
 			<< INDENT4 ");\n"
-		    << INDENT4 "return;\n"
-		    << INDENT3 CLOSE_BLOCK
-		    << INDENT2 CLOSE_BLOCK
-		    << INDENT2 "\n"
-		    << INDENT2 "var constructorsType = extensionsAssembly.GetType(\"" BINDINGS_GDEXTENSION_NAMESPACE "." BINDINGS_GDEXTENSION_CLASS_CONSTRUCTOR "\");\n"
-		    << INDENT2 "if (constructorsType == null) " OPEN_BLOCK
-		    << INDENT3 BINDINGS_GLOBAL_SCOPE_CLASS ".PrintErr(\"BUG: Assembly `" BINDINGS_GDEXTENSION_ASSEMBLY_NAME "` exists but it does not contain the expected type `" BINDINGS_GDEXTENSION_CLASS_CONSTRUCTOR "`.\");\n"
-		    << INDENT3 "return;\n"
-		    << INDENT2 CLOSE_BLOCK
-		    << INDENT2 "\n"
-		    << INDENT2 "var populateConstructorMethod = constructorsType.GetMethod(\"" BINDINGS_GDEXTENSION_CLASS_CONSTRUCTOR_METHOD "\", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);\n"
-		    << INDENT2 "if (populateConstructorMethod == null) " OPEN_BLOCK
-		    << INDENT3 BINDINGS_GLOBAL_SCOPE_CLASS ".PrintErr(\"BUG: Type `" BINDINGS_GDEXTENSION_CLASS_CONSTRUCTOR "` exists but it does not contain the expected method `" BINDINGS_GDEXTENSION_CLASS_CONSTRUCTOR_METHOD "`.\");\n"
-		    << INDENT3 "return;\n"
-		    << INDENT2 CLOSE_BLOCK
-		    << INDENT2 "\n"
-		    << INDENT2 "populateConstructorMethod.Invoke(null, [" BINDINGS_GDEXTENSION_CLASS_CONSTRUCTOR_DICTIONARY "]);\n"
-		    << INDENT1 CLOSE_BLOCK;
+			<< INDENT4 "return;\n"
+			<< INDENT3 CLOSE_BLOCK
+			<< INDENT2 CLOSE_BLOCK
+			<< INDENT2 "\n"
+			<< INDENT2 "var constructorsType = extensionsAssembly.GetType(\"" BINDINGS_GDEXTENSION_NAMESPACE "." BINDINGS_GDEXTENSION_CLASS_CONSTRUCTOR "\");\n"
+			<< INDENT2 "if (constructorsType == null) " OPEN_BLOCK
+			<< INDENT3 BINDINGS_GLOBAL_SCOPE_CLASS ".PrintErr(\"BUG: Assembly `" BINDINGS_GDEXTENSION_ASSEMBLY_NAME "` exists but it does not contain the expected type `" BINDINGS_GDEXTENSION_CLASS_CONSTRUCTOR "`.\");\n"
+			<< INDENT3 "return;\n"
+			<< INDENT2 CLOSE_BLOCK
+			<< INDENT2 "\n"
+			<< INDENT2 "var populateConstructorMethod = constructorsType.GetMethod(\"" BINDINGS_GDEXTENSION_CLASS_CONSTRUCTOR_METHOD "\", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);\n"
+			<< INDENT2 "if (populateConstructorMethod == null) " OPEN_BLOCK
+			<< INDENT3 BINDINGS_GLOBAL_SCOPE_CLASS ".PrintErr(\"BUG: Type `" BINDINGS_GDEXTENSION_CLASS_CONSTRUCTOR "` exists but it does not contain the expected method `" BINDINGS_GDEXTENSION_CLASS_CONSTRUCTOR_METHOD "`.\");\n"
+			<< INDENT3 "return;\n"
+			<< INDENT2 CLOSE_BLOCK
+			<< INDENT2 "\n"
+			<< INDENT2 "populateConstructorMethod.Invoke(null, [" BINDINGS_GDEXTENSION_CLASS_CONSTRUCTOR_DICTIONARY "]);\n"
+			<< INDENT1 CLOSE_BLOCK;
 
 		out << MEMBER_BEGIN "static " BINDINGS_CLASS_CONSTRUCTOR "()\n";
 		out << INDENT1 OPEN_BLOCK;
@@ -2511,7 +2511,6 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 		// partial class declarations then it becomes harder to tell (Rider warns about this).
 
 		if (itype.is_instantiable) {
-
 			if (is_generating_gdextension) {
 				// GDExtension types don't have a unique function pointer capable of instantiating themselves + the Godot Wrapper.
 				// So in the GDExtension bindings we use the class info data to construct the whole thing instead.
@@ -2539,9 +2538,9 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 				if (is_generating_gdextension) {
 					output << INDENT3 "ConstructAndInitialize("
 						   << ICALL_CLASSDB_INSTANTIATE_WITH_CLASS_INFO "(" CS_STATIC_FIELD_CLASS_INFO ", true), "
-					       << BINDINGS_NATIVE_NAME_FIELD ", CachedType, refCounted: "
-					       << (itype.is_ref_counted ? "true" : "false") << ");\n"
-					       << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
+						   << BINDINGS_NATIVE_NAME_FIELD ", CachedType, refCounted: "
+						   << (itype.is_ref_counted ? "true" : "false") << ");\n"
+						   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 				} else {
 					output << INDENT3 "ConstructAndInitialize(" CS_STATIC_FIELD_NATIVE_CTOR "(godot_bool.True), "
 						   << BINDINGS_NATIVE_NAME_FIELD ", CachedType, refCounted: "
@@ -3024,12 +3023,11 @@ Error BindingsGenerator::_generate_cs_property(const BindingsGenerator::TypeInte
 }
 
 Error BindingsGenerator::_generate_cs_method(
-	const BindingsGenerator::TypeInterface &p_itype,
-	const BindingsGenerator::MethodInterface &p_imethod,
-	int &p_method_bind_count,
-	StringBuilder &p_output,
-	bool p_use_span
-) {
+		const BindingsGenerator::TypeInterface &p_itype,
+		const BindingsGenerator::MethodInterface &p_imethod,
+		int &p_method_bind_count,
+		StringBuilder &p_output,
+		bool p_use_span) {
 	const TypeInterface *return_type = _get_type_or_singleton_or_null(p_imethod.return_type);
 	ERR_FAIL_NULL_V_MSG(return_type, ERR_BUG, "Return type '" + p_imethod.return_type.cname + "' was not found.");
 
@@ -5491,6 +5489,9 @@ Error BindingsGenerator::generate_gdextension_cs_api(const String &p_proj_dir) {
 
 		// Gather all icalls we'll use.
 		for (const MethodInterface &imethod : itype.methods) {
+			if (imethod.is_virtual) {
+				continue;
+			}
 			HashMap<const MethodInterface *, const InternalCall *>::ConstIterator match = bindgen.method_icalls_map.find(&imethod);
 			ERR_FAIL_NULL_V_MSG(match, ERR_BUG, "Could not find InternalCall mapping for method `" + imethod.name + "`.");
 
@@ -5528,7 +5529,7 @@ Error BindingsGenerator::generate_gdextension_cs_api(const String &p_proj_dir) {
 
 		List<String> types_added;
 
-		for (const TypeInterface* itype_ptr : types_generated) {
+		for (const TypeInterface *itype_ptr : types_generated) {
 			const TypeInterface &itype = *itype_ptr;
 
 			if (itype.is_singleton_instance) {
@@ -5646,7 +5647,7 @@ Error BindingsGenerator::generate_gdextension_cs_api(const String &p_proj_dir) {
 
 		out << MEMBER_BEGIN "private const int VarArgsSpanThreshold = 10;\n";
 
-		for (const InternalCall* icall : icalls_used) {
+		for (const InternalCall *icall : icalls_used) {
 			if (icall->editor_only) {
 				continue;
 			}
@@ -5693,17 +5694,17 @@ Error BindingsGenerator::generate_gdextension_cs_api(const String &p_proj_dir) {
 			   "\n";
 
 		out << "[SuppressMessage(\"ReSharper\", \"InconsistentNaming\")]\n"
-		       "[SuppressMessage(\"ReSharper\", \"RedundantUnsafeContext\")]\n"
-               "[SuppressMessage(\"ReSharper\", \"RedundantNameQualifier\")]\n"
+			   "[SuppressMessage(\"ReSharper\", \"RedundantUnsafeContext\")]\n"
+			   "[SuppressMessage(\"ReSharper\", \"RedundantNameQualifier\")]\n"
 			   "[System.Runtime.CompilerServices.SkipLocalsInit]\n";
 
-        out << "internal static class " BINDINGS_GDEXTENSION_CLASS_NATIVECALLS_EDITOR "\n" OPEN_BLOCK
+		out << "internal static class " BINDINGS_GDEXTENSION_CLASS_NATIVECALLS_EDITOR "\n" OPEN_BLOCK
 			<< INDENT1 "internal static ulong godot_api_hash = "
-		    << String::num_uint64(ClassDB::get_api_hash(ClassDB::API_EDITOR)) << ";\n"
-		    << MEMBER_BEGIN "private const int VarArgsSpanThreshold = 10;\n"
+			<< String::num_uint64(ClassDB::get_api_hash(ClassDB::API_EDITOR)) << ";\n"
+			<< MEMBER_BEGIN "private const int VarArgsSpanThreshold = 10;\n"
 			<< "\n";
 
-		for (const InternalCall* icall : icalls_used) {
+		for (const InternalCall *icall : icalls_used) {
 			if (!icall->editor_only) {
 				continue;
 			}
