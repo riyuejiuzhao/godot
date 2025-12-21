@@ -199,12 +199,6 @@ static String _contextualize_class_specifier(const String &p_class_specifier, co
 
 // TODO: This is sometimes used directly as `doc->something`, other times as `EditorHelp::get_doc_data()`, which is thread-safe.
 // Might this be a problem?
-DocTools *EditorHelp::doc = nullptr;
-DocTools *EditorHelp::ext_doc = nullptr;
-
-int EditorHelp::doc_generation_count = 0;
-String EditorHelp::doc_version_hash;
-Thread EditorHelp::worker_thread;
 
 static bool _attempt_doc_load(const String &p_class) {
 	// Docgen always happens in the outer-most class: it also generates docs for inner classes.
