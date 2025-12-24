@@ -5399,7 +5399,9 @@ void BindingsGenerator::_log(const char *p_format, ...) {
 void BindingsGenerator::_initialize() {
 	initialized = false;
 
-	EditorHelp::generate_doc(false);
+	if (!is_generating_gdextension) {
+		EditorHelp::generate_doc(false);
+	}
 
 	enum_types.clear();
 
@@ -5753,8 +5755,8 @@ Error BindingsGenerator::generate_gdextension_cs_api(const String &p_proj_dir) {
 		out << "        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>\n";
 		out << "    </PropertyGroup>\n";
 		out << "    <ItemGroup>\n";
-		out << "        <PackageReference Include=\"GodotSharp\" Version=\"" VERSION_BRANCH ".*\"/>\n";
-		out << "        <PackageReference Include=\"GodotSharpEditor\" Version=\"" VERSION_BRANCH ".*\"/>\n";
+		out << "        <PackageReference Include=\"GodotSharp\" Version=\"" GODOT_VERSION_NUMBER "-" GODOT_VERSION_STATUS "\"/>\n";
+		out << "        <PackageReference Include=\"GodotSharpEditor\" Version=\"" GODOT_VERSION_NUMBER "-" GODOT_VERSION_STATUS "\"/>\n";
 		out << "    </ItemGroup>\n";
 		out << "    <Import Condition=\" '$(GodotSkipGenerated)' == '' \" Project=\"Generated\\GeneratedIncludes.props\" />\n";
 		out << "</Project>\n";
