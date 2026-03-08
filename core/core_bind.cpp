@@ -1722,7 +1722,7 @@ TypedArray<Dictionary> ClassDB::class_get_method_list(const StringName &p_class,
 }
 
 Error ClassDB::generate_gdextension_cs_api(const String &p_project_dir) const {
-#ifdef TOOLS_ENABLED
+#if defined(TOOLS_ENABLED) && defined(MODULE_MONO_ENABLED)
 	return BindingsGenerator::generate_gdextension_cs_api(p_project_dir);
 #else
 	return ERR_UNAVAILABLE;
