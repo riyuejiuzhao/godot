@@ -159,11 +159,65 @@ namespace GodotTools
                         return false;
                     }
                 }
+
+                pr.Step("Adding GDExtension bindings to project and solution...".TTR());
+                string gdExtCsprojPath = GodotSharpDirs.GDExtensionBindingsProjectPath;
+                AddGDExtensionProjectReference(gdExtCsprojPath);
+                AddGDExtensionProjectToSolution(gdExtCsprojPath);
             }
 
             GD.Print("C# GDExtension Bindings were successfully generated, please restart the editor.");
 
             return true;
+        }
+
+        private static void AddGDExtensionProjectReference(string gdExtCsprojPath)
+        {
+            if (!System.IO.File.Exists(gdExtCsprojPath) || !System.IO.File.Exists(GodotSharpDirs.ProjectCsProjPath))
+                return;
+
+            try
+            {
+                string csprojDir = Path.GetDirectoryName(GodotSharpDirs.ProjectCsProjPath)!;
+                string gdExtRelPath = Path.GetRelativePath(csprojDir, gdExtCsprojPath);
+
+                if (ProjectUtils.EnsureProjectReference(GodotSharpDirs.ProjectCsProjPath, gdExtRelPath))
+                {
+                    GD.Print("Added ProjectReference to GDExtension bindings in main project.");
+                }
+            }
+            catch (Exception err)
+            {
+                GD.PushWarning($"Could not add ProjectReference to main project: {err.Message}");
+            }
+        }
+
+        private static void AddGDExtensionProjectToSolution(string gdExtCsprojPath)
+        {
+            if (!System.IO.File.Exists(gdExtCsprojPath) || !System.IO.File.Exists(GodotSharpDirs.ProjectSlnPath))
+                return;
+
+            try
+            {
+                string slnDir = Path.GetDirectoryName(GodotSharpDirs.ProjectSlnPath)!;
+                string gdExtRelPath = Path.GetRelativePath(slnDir, gdExtCsprojPath);
+                string projectName = Path.GetFileNameWithoutExtension(gdExtCsprojPath);
+                string projectGuid = Guid.NewGuid().ToString().ToUpperInvariant();
+
+                if (DotNetSolution.EnsureProjectInSolution(
+                        GodotSharpDirs.ProjectSlnPath,
+                        projectName,
+                        gdExtRelPath,
+                        projectGuid,
+                        new List<string> { "Debug", "ExportDebug", "ExportRelease" }))
+                {
+                    GD.Print("Added GDExtension bindings project to solution.");
+                }
+            }
+            catch (Exception err)
+            {
+                GD.PushWarning($"Could not add GDExtension bindings project to solution: {err.Message}");
+            }
         }
 
         private void _ShowDotnetFeatures()

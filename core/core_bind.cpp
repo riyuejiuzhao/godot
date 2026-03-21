@@ -48,7 +48,11 @@
 #include "core/os/process_id.h"
 #include "core/os/thread_safe.h"
 #include "core/variant/typed_array.h"
+#include "modules/modules_enabled.gen.h"
+
+#if defined(TOOLS_ENABLED) && defined(MODULE_MONO_ENABLED)
 #include "modules/mono/editor/bindings_generator.h"
+#endif
 
 namespace CoreBind {
 
