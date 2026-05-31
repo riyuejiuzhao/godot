@@ -600,7 +600,7 @@ Object *ClassDB::_instantiate_internal(const StringName &p_class, bool p_require
 
 #ifdef TOOLS_ENABLED
 	if ((ti->api == API_EDITOR || ti->api == API_EDITOR_EXTENSION) && !Engine::get_singleton()->is_editor_hint()) {
-		ERR_PRINT(vformat("Class '%s' can only be instantiated by editor.", String(ti->name)));
+		ERR_PRINT(vformat("Class '%s' can only be instantiated by editor.", String(ti->gdtype->get_name())));
 		return nullptr;
 	}
 #endif

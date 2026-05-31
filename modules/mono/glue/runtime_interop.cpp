@@ -92,7 +92,7 @@ Object *godotsharp_instantiate_with_class_info(const ClassDB::ClassInfo *p_class
 #ifdef TOOLS_ENABLED
 	bool is_editor_hint = Engine::get_singleton()->is_editor_hint();
 	if ((p_class_info->api == ClassDB::API_EDITOR || p_class_info->api == ClassDB::API_EDITOR_EXTENSION) && !is_editor_hint) {
-		ERR_PRINT(vformat("Class '%s' can only be instantiated by editor.", String(p_class_info->name)));
+		ERR_PRINT(vformat("Class '%s' can only be instantiated by editor.", String(p_class_info->gdtype->get_name())));
 		return nullptr;
 	}
 
@@ -109,13 +109,13 @@ Object *godotsharp_instantiate_with_class_info(const ClassDB::ClassInfo *p_class
 			}
 #endif // DISABLE_DEPRECATED
 		} else if (!p_class_info->inherits_ptr || !p_class_info->inherits_ptr->creation_func) {
-			ERR_PRINT(vformat("Cannot make a placeholder instance of runtime class %s because its parent cannot be constructed.", p_class_info->name));
+			ERR_PRINT(vformat("Cannot make a placeholder instance of runtime class %s because its parent cannot be constructed.", p_class_info->gdtype->get_name()));
 		} else {
 			can_create_placeholder = true;
 		}
 
 		if (can_create_placeholder) {
-			ObjectGDExtension *extension = ClassDB::get_placeholder_extension(p_class_info->name);
+			ObjectGDExtension *extension = ClassDB::get_placeholder_extension(p_class_info->gdtype->get_name());
 			return (Object *)extension->create_instance2(extension->class_userdata, p_notify_postinitialize);
 		}
 	}
